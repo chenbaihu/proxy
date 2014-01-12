@@ -1,5 +1,23 @@
-CMakeCache.txt
-CMakeFiles
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+*~
+
+/CMakeCache.txt
+CMakeFiles/
 Makefile
+config.h
+src/Testing
+
 cmake_install.cmake
 install_manifest.txt
