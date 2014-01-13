@@ -39,19 +39,28 @@
 
 #define _EVENT_ERR_ABORT ((int)0xdeaddead)
 
-void event_err(int eval, const char *fmt, ...) EV_CHECK_FMT(2,3) EV_NORETURN;
-void event_warn(const char *fmt, ...) EV_CHECK_FMT(1,2);
-void event_sock_err(int eval, evutil_socket_t sock, const char *fmt, ...) EV_CHECK_FMT(3,4) EV_NORETURN;
-void event_sock_warn(evutil_socket_t sock, const char *fmt, ...) EV_CHECK_FMT(2,3);
-void event_errx(int eval, const char *fmt, ...) EV_CHECK_FMT(2,3) EV_NORETURN;
-void event_warnx(const char *fmt, ...) EV_CHECK_FMT(1,2);
-void event_msgx(const char *fmt, ...) EV_CHECK_FMT(1,2);
-void _event_debugx(const char *fmt, ...) EV_CHECK_FMT(1,2);
+void event_err_(const char* file, int line,int eval, const char *fmt, ...) EV_CHECK_FMT(4,5) EV_NORETURN;
+void event_warn_(const char* file, int line,const char *fmt, ...) EV_CHECK_FMT(3,4);
+void event_sock_err_(const char* file, int line,int eval, evutil_socket_t sock, const char *fmt, ...) EV_CHECK_FMT(5,6) EV_NORETURN;
+void event_sock_warn_(const char* file, int line,evutil_socket_t sock, const char *fmt, ...) EV_CHECK_FMT(4,5);
+void event_errx_(const char* file, int line,int eval, const char *fmt, ...) EV_CHECK_FMT(4,5) EV_NORETURN;
+void event_warnx_(const char* file, int line,const char *fmt, ...) EV_CHECK_FMT(3,4);
+void event_msgx_(const char* file, int line,const char *fmt, ...) EV_CHECK_FMT(3,4);
+void _event_debugx(const char* file, int line,const char *fmt, ...) EV_CHECK_FMT(3,4);
+
+
+#define event_err(...) event_err_(__FILE__,__LINE__,__VA_ARGS__)
+#define event_warn(...) event_warn_(__FILE__,__LINE__,__VA_ARGS__)
+#define event_sock_err(...) event_sock_err_(__FILE__,__LINE__,__VA_ARGS__)
+#define event_sock_warn(...) event_sock_warn_(__FILE__,__LINE__,__VA_ARGS__)
+#define event_errx(...) event_errx_(__FILE__,__LINE__,__VA_ARGS__)
+#define event_warnx(...) event_warnx_(__FILE__,__LINE__,__VA_ARGS__)
+#define event_msgx(...) event_msgx_(__FILE__,__LINE__,__VA_ARGS__)
 
 #ifdef USE_DEBUG
-#define event_debug(x) _event_debugx x
+#define event_debug(...) _event_debugx(__FILE__,__LINE__,__VA_ARGS__)
 #else
-#define event_debug(x) do {;} while (0)
+#define event_debug(...)
 #endif
 
 #undef EV_CHECK_FMT

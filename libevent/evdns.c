@@ -425,7 +425,7 @@ static int strtoint(const char *const str);
 #endif
 
 static void
-default_evdns_log_fn(int warning, const char *buf)
+default_evdns_log_fn(const char* file, int line,int warning, const char *buf)
 {
 	if (warning == EVDNS_LOG_WARN)
 		event_warnx("[evdns] %s", buf);
@@ -444,14 +444,14 @@ evdns_set_log_fn(evdns_debug_log_fn_type fn)
 }
 
 #ifdef __GNUC__
-#define EVDNS_LOG_CHECK	 __attribute__ ((format(printf, 2, 3)))
+#define EVDNS_LOG_CHECK	 __attribute__ ((format(printf, 4, 5)))
 #else
 #define EVDNS_LOG_CHECK
 #endif
 
-static void _evdns_log(int warn, const char *fmt, ...) EVDNS_LOG_CHECK;
+static void _evdns_log(const char* file, int line,int warn, const char *fmt, ...) EVDNS_LOG_CHECK;
 static void
-_evdns_log(int warn, const char *fmt, ...)
+_evdns_log(const char* file, int line,int warn, const char *fmt, ...)
 {
 	va_list args;
 	char buf[512];
@@ -463,14 +463,15 @@ _evdns_log(int warn, const char *fmt, ...)
 	if (evdns_log_fn) {
 		if (warn == EVDNS_LOG_MSG)
 			warn = EVDNS_LOG_WARN;
-		evdns_log_fn(warn, buf);
+		evdns_log_fn(file,line,warn, buf);
 	} else {
-		default_evdns_log_fn(warn, buf);
+	  default_evdns_log_fn(file,line,warn, buf);
 	}
 
 }
 
-#define log _evdns_log
+//#define log _evdns_log
+#define log(se,...) _evdns_log(__FILE__,__LINE__,se,__VA_ARGS__)
 
 /* This walks the list of inflight requests to find the */
 /* one with a matching transaction id. Returns NULL on */

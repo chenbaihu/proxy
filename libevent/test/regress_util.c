@@ -435,7 +435,7 @@ static int logsev = 0;
 static char *logmsg = NULL;
 
 static void
-logfn(int severity, const char *msg)
+logfn(const char* file,int line,int severity, const char *msg)
 {
 	logsev = severity;
 	tt_want(msg);

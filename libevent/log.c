@@ -56,9 +56,9 @@
 
 #include "log-internal.h"
 
-static void _warn_helper(int severity, const char *errstr, const char *fmt,
+static void _warn_helper(const char* file, int line,int severity, const char *errstr, const char *fmt,
     va_list ap);
-static void event_log(int severity, const char *msg);
+static void event_log(const char* file, int line,int severity, const char *msg);
 static void event_exit(int errcode) EV_NORETURN;
 
 static event_fatal_cb fatal_fn = NULL;
@@ -82,92 +82,92 @@ event_exit(int errcode)
 }
 
 void
-event_err(int eval, const char *fmt, ...)
+event_err_(const char* file, int line,int eval, const char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
-	_warn_helper(_EVENT_LOG_ERR, strerror(errno), fmt, ap);
+	_warn_helper(file,line,_EVENT_LOG_ERR, strerror(errno), fmt, ap);
 	va_end(ap);
 	event_exit(eval);
 }
 
 void
-event_warn(const char *fmt, ...)
+event_warn_(const char* file, int line,const char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
-	_warn_helper(_EVENT_LOG_WARN, strerror(errno), fmt, ap);
+	_warn_helper(file,line,_EVENT_LOG_WARN, strerror(errno), fmt, ap);
 	va_end(ap);
 }
 
 void
-event_sock_err(int eval, evutil_socket_t sock, const char *fmt, ...)
+event_sock_err_(const char* file, int line,int eval, evutil_socket_t sock, const char *fmt, ...)
 {
 	va_list ap;
 	int err = evutil_socket_geterror(sock);
 
 	va_start(ap, fmt);
-	_warn_helper(_EVENT_LOG_ERR, evutil_socket_error_to_string(err), fmt, ap);
+	_warn_helper(file,line,_EVENT_LOG_ERR, evutil_socket_error_to_string(err), fmt, ap);
 	va_end(ap);
 	event_exit(eval);
 }
 
 void
-event_sock_warn(evutil_socket_t sock, const char *fmt, ...)
+event_sock_warn_(const char* file, int line,evutil_socket_t sock, const char *fmt, ...)
 {
 	va_list ap;
 	int err = evutil_socket_geterror(sock);
 
 	va_start(ap, fmt);
-	_warn_helper(_EVENT_LOG_WARN, evutil_socket_error_to_string(err), fmt, ap);
+	_warn_helper(file,line,_EVENT_LOG_WARN, evutil_socket_error_to_string(err), fmt, ap);
 	va_end(ap);
 }
 
 void
-event_errx(int eval, const char *fmt, ...)
+event_errx_(const char* file, int line,int eval, const char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
-	_warn_helper(_EVENT_LOG_ERR, NULL, fmt, ap);
+	_warn_helper(file,line,_EVENT_LOG_ERR, NULL, fmt, ap);
 	va_end(ap);
 	event_exit(eval);
 }
 
 void
-event_warnx(const char *fmt, ...)
+event_warnx_(const char* file, int line,const char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
-	_warn_helper(_EVENT_LOG_WARN, NULL, fmt, ap);
+	_warn_helper(file,line,_EVENT_LOG_WARN, NULL, fmt, ap);
 	va_end(ap);
 }
 
 void
-event_msgx(const char *fmt, ...)
+event_msgx_(const char* file, int line,const char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
-	_warn_helper(_EVENT_LOG_MSG, NULL, fmt, ap);
+	_warn_helper(file,line,_EVENT_LOG_MSG, NULL, fmt, ap);
 	va_end(ap);
 }
 
 void
-_event_debugx(const char *fmt, ...)
+_event_debugx(const char* file, int line,const char *fmt, ...)
 {
 	va_list ap;
 
 	va_start(ap, fmt);
-	_warn_helper(_EVENT_LOG_DEBUG, NULL, fmt, ap);
+	_warn_helper(file,line,_EVENT_LOG_DEBUG, NULL, fmt, ap);
 	va_end(ap);
 }
 
 static void
-_warn_helper(int severity, const char *errstr, const char *fmt, va_list ap)
+_warn_helper(const char* file, int line,int severity, const char *errstr, const char *fmt, va_list ap)
 {
 	char buf[1024];
 	size_t len;
@@ -184,7 +184,7 @@ _warn_helper(int severity, const char *errstr, const char *fmt, va_list ap)
 		}
 	}
 
-	event_log(severity, buf);
+	event_log(file,line,severity, buf);
 }
 
 static event_log_cb log_fn = NULL;
@@ -196,10 +196,10 @@ event_set_log_callback(event_log_cb cb)
 }
 
 static void
-event_log(int severity, const char *msg)
+event_log(const char* file, int line,int severity, const char *msg)
 {
 	if (log_fn)
-		log_fn(severity, msg);
+	  log_fn(file,line,severity, msg);
 	else {
 		const char *severity_str;
 		switch (severity) {

@@ -133,7 +133,7 @@ evdns_server_callback(struct evdns_server_request *req, void *data)
 static int verbose = 0;
 
 static void
-logfn(int is_warn, const char *msg) {
+logfn(const char* file, int line,int is_warn, const char *msg) {
 	if (!is_warn && !verbose)
 		return;
 	fprintf(stderr, "%s: %s\n", is_warn?"WARN":"INFO", msg);

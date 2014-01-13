@@ -581,7 +581,7 @@ void event_base_free(struct event_base *);
 
   @see event_set_log_callback
  */
-typedef void (*event_log_cb)(int severity, const char *msg);
+  typedef void (*event_log_cb)(const char* file, int line,int severity, const char *msg);
 /**
   Redirect Libevent's log messages.
 

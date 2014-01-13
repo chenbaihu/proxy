@@ -486,7 +486,7 @@ void evdns_base_search_ndots_set(struct evdns_base *base, const int ndots);
   @param is_warning indicates if the log message is a 'warning'
   @param msg the content of the log message
  */
-typedef void (*evdns_debug_log_fn_type)(int is_warning, const char *msg);
+  typedef void (*evdns_debug_log_fn_type)(const char* file, int line,int is_warning, const char *msg);
 
 
 /**

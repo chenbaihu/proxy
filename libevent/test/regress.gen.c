@@ -18,8 +18,7 @@
 
 #include "regress.gen.h"
 
-void event_warn(const char *fmt, ...);
-void event_warnx(const char *fmt, ...);
+#include "log-internal.h"
 
 
 /*
