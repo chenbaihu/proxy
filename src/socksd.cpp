@@ -51,12 +51,8 @@ static void logfn(const char* file, int line,int is_warn, const char *msg) {
   mylog(file,line,MY_LOG_DEBUG,"%s",msg);
 }
 
-extern "C"{
-void event_errx_(const char* file, int line,int eval, const char *fmt, ...) __attribute__((format(printf,4, 5)));
-}
- #define event_errx(...) event_errx_(__FILE__,__LINE__,__VA_ARGS__)
+
 int main(int argc, char *argv[]) {
-  event_errx(2, "Fatal error; too many kumquats (%d)", 5);
   MYDEBUG("start");
   event_enable_debug_mode();
   event_set_log_callback(my_libevent_log_cb);
