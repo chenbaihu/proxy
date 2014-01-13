@@ -3,7 +3,7 @@
 
 #include <event2/event.h>
 #include <event2/thread.h>
-#include <string.h> //memset
+#include <string.h>  //memset
 
 #include "acceptor.h"
 #include "ClientHandler.h"
@@ -25,32 +25,32 @@ static void my_free_event_dns_base_imm(evdns_base *base) {
   evdns_base_free(base, 0);
 }
 
-static void my_libevent_log_cb(const char* file, int line,int severity, const char *msg) {
+static void my_libevent_log_cb(const char *file, int line, int severity,
+                               const char *msg) {
   switch (severity) {
     case _EVENT_LOG_DEBUG:
-      mylog(file,line,MY_LOG_DEBUG,"%s",msg);
+      mylog(file, line, MY_LOG_DEBUG, "%s", msg);
       break;
     case _EVENT_LOG_MSG:
-      mylog(file,line,MY_LOG_DEBUG,"%s",msg);
+      mylog(file, line, MY_LOG_DEBUG, "%s", msg);
       break;
     case _EVENT_LOG_WARN:
-      mylog(file,line,MY_LOG_DEBUG,"%s",msg);
+      mylog(file, line, MY_LOG_DEBUG, "%s", msg);
       break;
     case _EVENT_LOG_ERR:
-      mylog(file,line,MY_LOG_DEBUG,"%s",msg);
+      mylog(file, line, MY_LOG_DEBUG, "%s", msg);
       break;
     default:
-      mylog(file,line,MY_LOG_DEBUG,"%s",msg);
+      mylog(file, line, MY_LOG_DEBUG, "%s", msg);
       break; /* never reached */
   }
 }
 
-static void logfn(const char* file, int line,int is_warn, const char *msg) {
+static void logfn(const char *file, int line, int is_warn, const char *msg) {
   /* if (!is_warn && !verbose)
      return; */
-  mylog(file,line,MY_LOG_DEBUG,"%s",msg);
+  mylog(file, line, MY_LOG_DEBUG, "%s", msg);
 }
-
 
 int main(int argc, char *argv[]) {
   MYDEBUG("start");
@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
   struct addrinfo *res;
   int error;
   if ((error = evutil_getaddrinfo(NULL, port, &hints, &res)) != 0) {
-    MYDEBUG("Unable to resolve port %s:%s",port,evutil_gai_strerror(error));
+    MYDEBUG("Unable to resolve port %s:%s", port, evutil_gai_strerror(error));
     return -1;
   }
 
@@ -89,7 +89,7 @@ int main(int argc, char *argv[]) {
     char xport[64];
     if (getnameinfo(ai->ai_addr, ai->ai_addrlen, xhost, sizeof(xhost), xport,
                     sizeof(xport), NI_NUMERICSERV) == 0) {
-      MYDEBUG("Listening on %s:%s",xhost,xport);
+      MYDEBUG("Listening on %s:%s", xhost, xport);
     }
 
     if ((listener =

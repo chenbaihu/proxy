@@ -268,9 +268,9 @@ int base64_pton(char const *src, u_char *target, size_t targsize) {
 
       case 3: /* Valid, means two bytes of info */
               /*
-   * We know this char is an =.  Is there anything but
-   * whitespace after it?
-   */
+* We know this char is an =.  Is there anything but
+* whitespace after it?
+*/
         for ((void)NULL; ch != '\0'; ch = *src++)
           if (!isspace((unsigned char)ch)) return (-1);
 

@@ -8,7 +8,7 @@ static ConnectionIDType getNewConnId() {
   return ++id;
 }
 
-event_base* Acceptor::get_event_base(){
+event_base *Acceptor::get_event_base() {
   event_base *base = evconnlistener_get_base(evlistener.get());
   return base;
 }
@@ -18,7 +18,7 @@ void Acceptor::on_new(struct evconnlistener *listener, evutil_socket_t sock,
   char xport[64];
   if (getnameinfo(addr, addrlen, xhost, sizeof(xhost), xport, sizeof(xport),
                   NI_NUMERICSERV) == 0) {
-    MYDEBUG("got a new connection from %s:%s", xhost,xport);
+    MYDEBUG("got a new connection from %s:%s", xhost, xport);
   } else
     MYDEBUG("got a new connection");
   event_base *base = evconnlistener_get_base(listener);
