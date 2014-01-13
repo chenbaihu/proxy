@@ -83,16 +83,38 @@ int main(int argc, char *argv[]) {
     event_enable_debug_mode();
   }
   event_set_log_callback(my_libevent_log_cb);
-  // TODO:add evthread_use_windows_threads()
+#ifdef OS_WIN
+  evthread_use_windows_threads();
+#else
   evthread_use_pthreads();
+#endif
 
+#ifdef OS_WIN
+  
+  WSADATA wsaData;
+  //Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h 
+  WORD wVersionRequested = MAKEWORD(2, 2);
+  int err = WSAStartup(wVersionRequested, &wsaData);
+  if (err != 0) {
+	  /* Tell the user that we could not find a usable */
+	  /* Winsock DLL.                                  */
+	  printf("WSAStartup failed with error: %d\n", err);
+	  return -1;
+  }
+
+#endif
   evdns_set_log_fn(logfn);
-  std::shared_ptr<event_base> ebase(event_base_new(), my_free_event_base);
-  std::shared_ptr<evdns_base> dns_base(evdns_base_new(ebase.get(), 1),
-                                       my_free_event_dns_base_imm);
+  std::shared_ptr<event_base> ebase(event_base_new(), my_free_event_base); 
   if (!ebase) {
     MYDEBUG("create event base fail");
     return -1;
+  }
+
+  std::shared_ptr<evdns_base> dns_base(evdns_base_new(ebase.get(), 1),
+	  my_free_event_dns_base_imm);
+  if (!dns_base) {
+	  MYDEBUG("create event dns base fail");
+	  return -1;
   }
   const char *port = "1080";
   evutil_addrinfo hints;
@@ -112,13 +134,14 @@ int main(int argc, char *argv[]) {
 
   Acceptor lis(dns_base);
   for (evutil_addrinfo *ai = res; ai != NULL; ai = ai->ai_next) {
+#ifdef OS_LINUX
     char xhost[1024];
     char xport[64];
     if (getnameinfo(ai->ai_addr, ai->ai_addrlen, xhost, sizeof(xhost), xport,
                     sizeof(xport), NI_NUMERICSERV) == 0) {
       MYDEBUG("Listening on %s:%s", xhost, xport);
     }
-
+#endif
     if ((listener =
              evconnlistener_new_bind(ebase.get(), on_newconn, &lis,
                                      LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE,
@@ -134,5 +157,9 @@ int main(int argc, char *argv[]) {
 
   // It was introduced in Libevent 2.1.1-alpha.
   // libevent_global_shutdown();
+
+#ifdef WIN32
+  WSACleanup();
+#endif
   return 0;
 }
