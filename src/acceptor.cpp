@@ -1,7 +1,7 @@
-#include <glog/logging.h>
 
 #include "acceptor.h"
 #include "ClientHandler.h"
+#include "mylog.h"
 
 static ConnectionIDType getNewConnId() {
   static ConnectionIDType id(0);
@@ -18,9 +18,9 @@ void Acceptor::on_new(struct evconnlistener *listener, evutil_socket_t sock,
   char xport[64];
   if (getnameinfo(addr, addrlen, xhost, sizeof(xhost), xport, sizeof(xport),
                   NI_NUMERICSERV) == 0) {
-    LOG(INFO) << "got a new connection from " << xhost << ":" << xport << ".";
+    MYDEBUG("got a new connection from %s:%s", xhost,xport);
   } else
-    LOG(INFO) << "got a new connection";
+    MYDEBUG("got a new connection");
   event_base *base = evconnlistener_get_base(listener);
   ConnectionIDType cid = getNewConnId();
   // TODO:add BEV_OPT_THREADSAFE??

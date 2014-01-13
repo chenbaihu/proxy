@@ -12,7 +12,7 @@ endif()
 ADD_LIBRARY(socks STATIC mylog.h mylog.cpp md5.cpp base64.cpp  acceptor.h acceptor.cpp ClientHandler.h ClientHandler.cpp mydata.h mydata.cpp Socks5Req.h Socks5Req.cpp) #dns.h  dns.cpp
 
 add_executable(socksd socksd.cpp)
-target_link_libraries(socksd socks event glog ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(socksd socks event ${CMAKE_THREAD_LIBS_INIT})
 
 #add_executable(curl_unitest curl_unitest.cpp)
 #target_link_libraries(curl_unitest socks event gtest curl ${CMAKE_THREAD_LIBS_INIT})

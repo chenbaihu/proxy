@@ -43,7 +43,6 @@ public:
   }
 
   static void remote_readcb(struct bufferevent *bev, void *ptr){
-    LOG(INFO)<<"read";
     ((ClientHandler*)ptr)->on_remote_read(bev);
   }
 

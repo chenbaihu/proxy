@@ -1,14 +1,15 @@
-#include <glog/logging.h>
+#include <string.h> //memset
 
 #include "ClientHandler.h"
 #include "acceptor.h"
 #include "Socks5Req.h"
+#include "mylog.h"
 
 void ClientHandler::close() { lis_->remove(id_); }
 void ClientHandler::on_remote_read(bufferevent *bev) {
   auto input = bufferevent_get_input(bev);
   size_t len = evbuffer_get_length(input);
-  LOG(INFO) << "write " << len << " bytes to client";
+  MYDEBUG("write %zd bytes to client",len);
   bufferevent_write_buffer(this->bev_, input);
 }
 
@@ -19,9 +20,9 @@ static void on_remote_servername_resolved(int result, struct evutil_addrinfo *re
 
 void ClientHandler::on_remote_servername_resolved(int errcode, struct evutil_addrinfo *addr){
   if (errcode) {
-    LOG(ERROR)<<"resolve fail "<<evutil_gai_strerror(errcode);
+    MYDEBUG("resolve fail %s",evutil_gai_strerror(errcode));
     return;
-  } else LOG(ERROR)<<"resolve done ";
+  } else MYDEBUG("resolve done");
   event_base* base=this->lis_->get_event_base();
   for (auto ai = addr; ai; ai = ai->ai_next) {
     remote_bev_ = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
@@ -41,7 +42,7 @@ void ClientHandler::on_read(bufferevent *bev) {
   size_t n;
   bool eof = false;
   while (!eof) {
-    LOG(INFO) << "state=" << state;
+    MYDEBUG("state=%d",state);
     switch (state) {
       case VERSION:
         n = evbuffer_remove(input, &version, 1);
@@ -94,7 +95,7 @@ void ClientHandler::on_read(bufferevent *bev) {
 	if(req.addressType==Socks5Req::IPV6||req.addressType==Socks5Req::IPV4)
 	  hints.ai_flags |= EVUTIL_AI_NUMERICHOST;
 	//hints.ai_flags = EVUTIL_AI_ADDRCONFIG;  // or EVUTIL_AI_ADDRCONFIG ?
-	LOG(INFO)<<"resolve "<<req.addr;
+	MYDEBUG("resolve %s",req.addr);
 	evdns_getaddrinfo(lis_->dns_.get(),req.addr,portstr.c_str(),&hints,&::on_remote_servername_resolved,this);
 	state=RESOLVING;
 	eof=true;
@@ -108,7 +109,7 @@ void ClientHandler::on_read(bufferevent *bev) {
           return;
         }
         size_t len = evbuffer_get_length(input);
-        LOG(INFO) << "write " << len << " bytes to remote";
+        MYDEBUG("write %zd bytes to remote",len);
         bufferevent_write_buffer(remote_bev_, input);
       }
       default:
@@ -122,30 +123,30 @@ void ClientHandler::on_write(bufferevent *bev) {}
 
 void ClientHandler::on_remote_event(bufferevent *bev, short events) {
   if (events & BEV_EVENT_CONNECTED) {
-    LOG(INFO) << "remote connected";
+    MYDEBUG("remote connected");
     state = PROXY;
     uint8_t r[] = {0x05, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     bufferevent_write(this->bev_, r, sizeof(r));
     return;
   } else if (events & BEV_EVENT_ERROR) {
-    LOG(INFO) << "event error";
+    MYDEBUG( "event error");
     close();
   } else{
-    LOG(INFO) << "event error";
+    MYDEBUG( "event error");
     close();
   }
 }
 
 void ClientHandler::on_event(bufferevent *bev, short events) {
-  LOG(INFO) << "event" << events;
+  MYDEBUG( "event %hd", events);
   if (events & BEV_EVENT_ERROR) {
-    LOG(INFO) << "event error";
+    MYDEBUG( "event error");
   }
   close();
 }
 
 ClientHandler::~ClientHandler() throw() {
-  LOG(INFO) << "close connection " << id_;
+  MYDEBUG( "close connection %ld",id_);
   if (bev_) bufferevent_free(bev_);
   if (remote_bev_) bufferevent_free(remote_bev_);
   if (readbuf) evbuffer_free(readbuf);
