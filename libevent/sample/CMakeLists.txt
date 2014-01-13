@@ -5,6 +5,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../linux)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+SET(SOCKET_LIB Ws2_32)
 endif()
 
 add_executable (event-test event-test.c)

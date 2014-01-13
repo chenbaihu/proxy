@@ -3,6 +3,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #undef WIN32_LEAN_AND_MEAN
+#include <time.h>
 #endif
 #ifdef OS_LINUX
 #include <time.h>
