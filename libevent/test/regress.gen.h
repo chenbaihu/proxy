@@ -1,9 +1,9 @@
 /*
- * Automatically generated from ./regress.rpc
+ * Automatically generated from /root/github/proxy/libevent/test/regress.rpc
  */
 
-#ifndef ___REGRESS_RPC_
-#define ___REGRESS_RPC_
+#ifndef __ROOT_GITHUB_PROXY_LIBEVENT_TEST_REGRESS_RPC_
+#define __ROOT_GITHUB_PROXY_LIBEVENT_TEST_REGRESS_RPC_
 
 #include <event2/util.h> /* for ev_uint*_t */
 #include <event2/rpc.h>
@@ -204,4 +204,4 @@ int run_other_numbers_get(struct run *, int, ev_uint32_t *);
 ev_uint32_t * run_other_numbers_add(struct run *msg, const ev_uint32_t value);
 /* --- run done --- */
 
-#endif  /* ___REGRESS_RPC_ */
+#endif  /* __ROOT_GITHUB_PROXY_LIBEVENT_TEST_REGRESS_RPC_ */

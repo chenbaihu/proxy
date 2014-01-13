@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string>
+#include <event2/buffer.h>
 
 class Socks5Req{
 public:
@@ -17,10 +18,13 @@ public:
     DOMAINNAME=0x03,
     IPV6=0x04
   } addressType;
-  sockaddr addr;
-  std::string domainName;
-  short portForDomain;
+  char addr[512];
+  short port;
   Socks5Req(){};
-  bool parse(const uint8_t* buffer,size_t len);
+  
+  /**
+   * \return 0,ok. -1,error. 1,need more
+   */
+  int  parse(evbuffer *input);
 
 };

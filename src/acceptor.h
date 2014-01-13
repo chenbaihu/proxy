@@ -16,11 +16,12 @@ class Acceptor{
  private:
   typedef std::unordered_map<ConnectionIDType,ClientHandler*> HandlerMap;
   HandlerMap handlers;
-  std::shared_ptr<evdns_base> dns_;
   Acceptor(const Acceptor&){};
   Acceptor& operator=(const Acceptor&){return *this;}
  public:
+  std::shared_ptr<evdns_base> dns_;
   std::shared_ptr<evconnlistener> evlistener;
+  event_base* get_event_base();
   Acceptor(std::shared_ptr<evdns_base> dns):dns_(dns){};
   void remove(ConnectionIDType id);
   ~Acceptor() throw();  

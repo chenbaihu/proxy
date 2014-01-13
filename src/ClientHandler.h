@@ -23,6 +23,7 @@ private:
     S5_METHODS,
     S5_REQ,
     CONNECTING,
+    RESOLVING,
     PROXY,
   } state;
   ClientHandler(const ClientHandler&){};
@@ -53,7 +54,7 @@ public:
   void on_write(bufferevent *bev);
   void on_event(bufferevent *bev,short events);
   void on_remote_event(bufferevent *bev,short events);
-
+  void on_remote_servername_resolved(int result, struct evutil_addrinfo *res);
   ClientHandler(Acceptor* lis,ConnectionIDType id,bufferevent* bev):lis_(lis),id_(id),bev_(bev),remote_bev_(NULL),readbuf(evbuffer_new()),state(VERSION){
 
   }

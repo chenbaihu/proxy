@@ -5,6 +5,18 @@ find_package (Threads)
 INCLUDE (CheckIncludeFiles)
 INCLUDE (CheckIncludeFileCXX)
 
+option(USE_CLANG "build application with clang" OFF)
+
+if(USE_CLANG)
+     SET (CMAKE_C_COMPILER             "clang")
+     SET (CMAKE_CXX_COMPILER             "clang++")
+     SET (CMAKE_AR      "llvm-ar")
+     SET (CMAKE_LINKER  "llvm-link")
+     SET (CMAKE_NM      "llvm-nm")
+     SET (CMAKE_OBJDUMP "llvm-objdump")
+     SET (CMAKE_RANLIB  "llvm-ranlib")
+endif(USE_CLANG)
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 include_directories(/usr/local/include)
 set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")

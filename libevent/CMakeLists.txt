@@ -5,7 +5,7 @@ set (VERSION_MINOR 0)
 
 find_package(OpenSSL REQUIRED)
 
-add_definitions(-DHAVE_CONFIG_H)
+add_definitions(-DHAVE_CONFIG_H -DUSE_DEBUG)
 if(WIN32)
 add_definitions(-DUNICODE -D_UNICODE -DHAVE_CONFIG_H)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/WIN32-Code)
@@ -38,4 +38,5 @@ ADD_LIBRARY(event_extras STATIC ${EXTRA_SRCS})
 ADD_LIBRARY(event STATIC ${CORE_SRCS} ${EXTRA_SRCS})
 ADD_LIBRARY(event_openssl STATIC ${SSL_SRCS})
 
+ADD_SUBDIRECTORY(sample)
 ADD_SUBDIRECTORY(test)
