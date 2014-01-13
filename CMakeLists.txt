@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.6)
 project (p5)
 
 find_package (Threads)
+find_package(OpenSSL REQUIRED) #libevent need it
+
 INCLUDE (CheckIncludeFiles)
 INCLUDE (CheckIncludeFileCXX)
 
@@ -34,6 +36,7 @@ endif()
 ENABLE_TESTING()
 INCLUDE(CTest)
 
+ADD_SUBDIRECTORY(zlib)
 ADD_SUBDIRECTORY(rapidjson)
 ADD_SUBDIRECTORY(libevent)
 ADD_SUBDIRECTORY(gtest)
