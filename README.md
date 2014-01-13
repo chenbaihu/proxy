@@ -11,7 +11,7 @@ A Socks5 proxy.
 
 编译须知：
 
-请先安装glog
+请先安装cmake
 
 然后
 
