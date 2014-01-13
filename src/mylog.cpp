@@ -1,5 +1,3 @@
-
-
 #ifdef OS_WIN
 #include <winsock2.h>
 #define WIN32_LEAN_AND_MEAN
@@ -123,8 +121,9 @@ void mylog(const char* file, int line,int severity, const char* format,...){
 	   1 + t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec,const_basename(file),line);
 #endif
   // Record the position and size of the buffer after the prefix
-  const char* msg_start = buf;
-  const int msg_size = size;
+  //const char* msg_start = buf;
+  //const int msg_size = size;
+
   va_list ap;
   va_start(ap, format);
   bool no_chop = VADoRawLog(&buf, &size, format, ap);

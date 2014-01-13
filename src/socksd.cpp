@@ -76,8 +76,8 @@ int main(int argc, char *argv[]) {
   hints.ai_flags = EVUTIL_AI_PASSIVE;  // or EVUTIL_AI_ADDRCONFIG ?
   struct addrinfo *res;
   int error;
-  if ((error = getaddrinfo(NULL, port, &hints, &res)) != 0) {
-    MYDEBUG("Unable to resolve port %s:%s",port,gai_strerror(error));
+  if ((error = evutil_getaddrinfo(NULL, port, &hints, &res)) != 0) {
+    MYDEBUG("Unable to resolve port %s:%s",port,evutil_gai_strerror(error));
     return -1;
   }
 
