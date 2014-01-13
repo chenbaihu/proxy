@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.6) 
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/rapidjson/include)
 include_directories(${PROJECT_SOURCE_DIR}/libevent/include)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
