@@ -113,7 +113,7 @@ timeval_msec_diff(const struct timeval *start, const struct timeval *end)
  */
 int in_legacy_test_wrapper = 0;
 
-static void dnslogcb(int w, const char *m)
+static void dnslogcb(const char* file,int line,int w, const char *m)
 {
 	TT_BLATHER(("%s", m));
 }
@@ -181,7 +181,7 @@ regress_fork(void)
 #endif
 
 static void
-ignore_log_cb(int s, const char *msg)
+ignore_log_cb(const char* file, int line, int s, const char *msg)
 {
 }
 
