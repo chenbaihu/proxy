@@ -1589,8 +1589,10 @@ class CCodeGenerator:
 
         pre += '\n#include "%s"\n\n' % header_file
 
-        pre += 'void event_warn(const char *fmt, ...);\n'
-        pre += 'void event_warnx(const char *fmt, ...);\n\n'
+        pre += 'void event_warn_(const char* file, int line,const char *fmt, ...);\n'
+        pre += 'void event_warnx_(const char* file, int line,const char *fmt, ...);\n\n'
+        pre += '#define event_warn(...) event_warn_(__FILE__,__LINE__,__VA_ARGS__)\n'
+        pre += '#define event_warnx(...) event_warnx_(__FILE__,__LINE__,__VA_ARGS__)\n\n'
 
         return pre
 
