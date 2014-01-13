@@ -1,7 +1,10 @@
 
 #include <string.h>
-#include <glog/logging.h>
+#include <stdint.h>
+
+#ifdef LINUX
 #include <arpa/inet.h>
+#endif
 
 #include "Socks5Req.h"
 
