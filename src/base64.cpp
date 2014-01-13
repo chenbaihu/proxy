@@ -41,15 +41,17 @@
  */
 
 #include <sys/types.h>
+#ifdef OS_LINUX
 #include <sys/param.h>
 #include <sys/socket.h>
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <arpa/nameser.h>
-
-#include <ctype.h>
 #include <resolv.h>
+#endif
+#include <ctype.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -126,11 +128,11 @@ static const char Pad64 = '=';
            characters followed by one "=" padding character.
    */
 
-int base64_ntop(u_char const *src, size_t srclength, char *target,
+int base64_ntop(unsigned char const *src, size_t srclength, char *target,
                 size_t targsize) {
   size_t datalength = 0;
-  u_char input[3];
-  u_char output[4];
+  unsigned char input[3];
+  unsigned char output[4];
   size_t i;
 
   while (2 < srclength) {
@@ -188,7 +190,7 @@ int base64_ntop(u_char const *src, size_t srclength, char *target,
    it returns the number of data bytes stored at the target, or -1 on error.
  */
 
-int base64_pton(char const *src, u_char *target, size_t targsize) {
+int base64_pton(char const *src, unsigned char *target, size_t targsize) {
   int tarindex, state, ch;
   char *pos;
 
