@@ -10,7 +10,7 @@ endif()
 
 #add_definitions(-DUNICODE -D_UNICODE -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS -DOS_WIN -DGTEST_HAS_TR1_TUPLE=0 -D_DEBUG -DDEBUG)
 #add_definitions(-DHAVE_CONFIG_H)
-ADD_LIBRARY(socks STATIC mylog.h mylog.cpp md5.cpp base64.cpp  acceptor.h acceptor.cpp ClientHandler.h ClientHandler.cpp mydata.h mydata.cpp Socks5Req.h Socks5Req.cpp) #dns.h  dns.cpp
+ADD_LIBRARY(socks STATIC mylog.h mylog.cpp md5.cpp base64.cpp  acceptor.h acceptor.cpp ClientHandler.h ClientHandler.cpp mydata.h mydata.cpp Socks5Req.h Socks5Req.cpp getopt.cpp) #dns.h  dns.cpp
 
 add_executable(socksd socksd.cpp)
 target_link_libraries(socksd socks event ${CMAKE_THREAD_LIBS_INIT})

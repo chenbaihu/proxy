@@ -8,6 +8,7 @@
 #include "acceptor.h"
 #include "ClientHandler.h"
 #include "mylog.h"
+#include "my_getopt.h"
 
 void on_newconn(struct evconnlistener *listener, evutil_socket_t sock,
                 struct sockaddr *addr, int addrlen, void *ptr) {
@@ -52,9 +53,35 @@ static void logfn(const char *file, int line, int is_warn, const char *msg) {
   mylog(file, line, MY_LOG_DEBUG, "%s", msg);
 }
 
+static void usage(){
+  fprintf(stderr,"Usage: proxy -f config_file_path\n");
+}
+
 int main(int argc, char *argv[]) {
+  std::string configFileName;
+  bool enableEventDebug=false;
+  int ch;
+  while ((ch = slib::getopt(argc, argv, "dhf:")) != -1) {
+    switch (ch) {
+    case 'f':
+      configFileName=slib::optarg;
+      break;
+    case 'd':
+      enableEventDebug=true;
+      break;
+    case 'h':
+    case '?':
+    default:
+      usage();
+      return -1;
+    }
+  }
+    
   MYDEBUG("start");
-  event_enable_debug_mode();
+  if(enableEventDebug){
+    MYDEBUG("enable libevent debug");
+    event_enable_debug_mode();
+  }
   event_set_log_callback(my_libevent_log_cb);
   // TODO:add evthread_use_windows_threads()
   evthread_use_pthreads();
