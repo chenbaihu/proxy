@@ -273,9 +273,9 @@ epoll_apply_one_change(struct event_base *base,
 					    (int)epev.events, ch->fd);
 					return -1;
 				} else {
-					event_debug(("Epoll MOD(%d) on %d retried as ADD; succeeded.",
+					event_debug("Epoll MOD(%d) on %d retried as ADD; succeeded.",
 						(int)epev.events,
-						ch->fd));
+						ch->fd);
 				}
 			} else if (op == EPOLL_CTL_ADD && errno == EEXIST) {
 				/* If an ADD operation fails with EEXIST,
@@ -290,9 +290,9 @@ epoll_apply_one_change(struct event_base *base,
 					    (int)epev.events, ch->fd);
 					return -1;
 				} else {
-					event_debug(("Epoll ADD(%d) on %d retried as MOD; succeeded.",
+					event_debug("Epoll ADD(%d) on %d retried as MOD; succeeded.",
 						(int)epev.events,
-						ch->fd));
+						ch->fd);
 				}
 			} else if (op == EPOLL_CTL_DEL &&
 			    (errno == ENOENT || errno == EBADF ||
@@ -300,10 +300,10 @@ epoll_apply_one_change(struct event_base *base,
 				/* If a delete fails with one of these errors,
 				 * that's fine too: we closed the fd before we
 				 * got around to calling epoll_dispatch. */
-				event_debug(("Epoll DEL(%d) on fd %d gave %s: DEL was unnecessary.",
+				event_debug("Epoll DEL(%d) on fd %d gave %s: DEL was unnecessary.",
 					(int)epev.events,
 					ch->fd,
-					strerror(errno)));
+					strerror(errno));
 			} else {
 				event_warn("Epoll %s(%d) on fd %d failed.  Old events were %d; read change was %d (%s); write change was %d (%s)",
 				    epoll_op_to_string(op),
@@ -317,13 +317,13 @@ epoll_apply_one_change(struct event_base *base,
 				return -1;
 			}
 		} else {
-			event_debug(("Epoll %s(%d) on fd %d okay. [old events were %d; read change was %d; write change was %d]",
+			event_debug("Epoll %s(%d) on fd %d okay. [old events were %d; read change was %d; write change was %d]",
 				epoll_op_to_string(op),
 				(int)epev.events,
 				(int)ch->fd,
 				ch->old_events,
 				ch->read_change,
-				ch->write_change));
+				ch->write_change);
 		}
 	}
 	return 0;
@@ -417,7 +417,7 @@ epoll_dispatch(struct event_base *base, struct timeval *tv)
 		return (0);
 	}
 
-	event_debug(("%s: epoll_wait reports %d", __func__, res));
+	event_debug("%s: epoll_wait reports %d", __func__, res);
 	EVUTIL_ASSERT(res <= epollop->nevents);
 
 	for (i = 0; i < res; i++) {

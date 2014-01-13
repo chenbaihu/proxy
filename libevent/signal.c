@@ -224,8 +224,8 @@ _evsig_set_handler(struct event_base *base,
 	 */
 	if (evsignal >= sig->sh_old_max) {
 		int new_max = evsignal + 1;
-		event_debug(("%s: evsignal (%d) >= sh_old_max (%d), resizing",
-			    __func__, evsignal, sig->sh_old_max));
+		event_debug("%s: evsignal (%d) >= sh_old_max (%d), resizing",
+			    __func__, evsignal, sig->sh_old_max);
 		p = mm_realloc(sig->sh_old, new_max * sizeof(*sig->sh_old));
 		if (p == NULL) {
 			event_warn("realloc");
@@ -296,7 +296,7 @@ evsig_add(struct event_base *base, evutil_socket_t evsignal, short old, short ev
 	evsig_base_fd = base->sig.ev_signal_pair[0];
 	EVSIGBASE_UNLOCK();
 
-	event_debug(("%s: %d: changing signal handler", __func__, (int)evsignal));
+	event_debug("%s: %d: changing signal handler", __func__, (int)evsignal);
 	if (_evsig_set_handler(base, (int)evsignal, evsig_handler) == -1) {
 		goto err;
 	}
@@ -354,8 +354,8 @@ evsig_del(struct event_base *base, evutil_socket_t evsignal, short old, short ev
 {
 	EVUTIL_ASSERT(evsignal >= 0 && evsignal < NSIG);
 
-	event_debug(("%s: "EV_SOCK_FMT": restoring signal handler",
-		__func__, EV_SOCK_ARG(evsignal)));
+	event_debug("%s: "EV_SOCK_FMT": restoring signal handler",
+		__func__, EV_SOCK_ARG(evsignal));
 
 	EVSIGBASE_LOCK();
 	--evsig_base_n_signals_added;

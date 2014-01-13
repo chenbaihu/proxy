@@ -261,7 +261,7 @@ http_basic_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *evb = evbuffer_new();
 	int empty = evhttp_find_header(evhttp_request_get_input_headers(req), "Empty") != NULL;
-	event_debug(("%s: called\n", __func__));
+	event_debug("%s: called\n", __func__);
 	evbuffer_add_printf(evb, BASIC_REQUEST_BODY);
 
 	/* For multi-line headers test */
@@ -325,7 +325,7 @@ http_chunked_cb(struct evhttp_request *req, void *arg)
 {
 	struct timeval when = { 0, 0 };
 	struct chunk_req_state *state = malloc(sizeof(struct chunk_req_state));
-	event_debug(("%s: called\n", __func__));
+	event_debug("%s: called\n", __func__);
 
 	memset(state, 0, sizeof(struct chunk_req_state));
 	state->req = req;
@@ -482,7 +482,7 @@ http_badreq_cb(struct evhttp_request *req, void *arg)
 static void
 http_badreq_errorcb(struct bufferevent *bev, short what, void *arg)
 {
-	event_debug(("%s: called (what=%04x, arg=%p)", __func__, what, arg));
+	event_debug("%s: called (what=%04x, arg=%p)", __func__, what, arg);
 	/* ignore */
 }
 
@@ -536,7 +536,7 @@ http_badreq_readcb(struct bufferevent *bev, void *arg)
 static void
 http_badreq_successcb(evutil_socket_t fd, short what, void *arg)
 {
-	event_debug(("%s: called (what=%04x, arg=%p)", __func__, what, arg));
+	event_debug("%s: called (what=%04x, arg=%p)", __func__, what, arg);
 	event_base_loopexit(exit_base, NULL);
 }
 
@@ -650,7 +650,7 @@ http_delete_cb(struct evhttp_request *req, void *arg)
 		exit(1);
 	}
 
-	event_debug(("%s: called\n", __func__));
+	event_debug("%s: called\n", __func__);
 	evbuffer_add_printf(evb, BASIC_REQUEST_BODY);
 
 	/* allow sending of an empty reply */
@@ -1366,7 +1366,7 @@ http_dispatcher_cb(struct evhttp_request *req, void *arg)
 {
 
 	struct evbuffer *evb = evbuffer_new();
-	event_debug(("%s: called\n", __func__));
+	event_debug("%s: called\n", __func__);
 	evbuffer_add_printf(evb, "DISPATCHER_TEST");
 
 	evhttp_send_reply(req, HTTP_OK, "Everything is fine", evb);
@@ -1521,7 +1521,7 @@ void
 http_post_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *evb;
-	event_debug(("%s: called\n", __func__));
+	event_debug("%s: called\n", __func__);
 
 	/* Yes, we are expecting a post request */
 	if (evhttp_request_get_command(req) != EVHTTP_REQ_POST) {
@@ -1639,7 +1639,7 @@ void
 http_put_cb(struct evhttp_request *req, void *arg)
 {
 	struct evbuffer *evb;
-	event_debug(("%s: called\n", __func__));
+	event_debug("%s: called\n", __func__);
 
 	/* Expecting a PUT request */
 	if (evhttp_request_get_command(req) != EVHTTP_REQ_PUT) {

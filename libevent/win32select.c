@@ -223,7 +223,7 @@ win32_add(struct event_base *base, evutil_socket_t fd,
 	if (!(events & (EV_READ|EV_WRITE)))
 		return (0);
 
-	event_debug(("%s: adding event for %d", __func__, (int)fd));
+	event_debug("%s: adding event for %d", __func__, (int)fd);
 	if (events & EV_READ) {
 		if (do_fd_set(win32op, idx, fd, 1)<0)
 			return (-1);
@@ -242,8 +242,8 @@ win32_del(struct event_base *base, evutil_socket_t fd, short old, short events,
 	struct win32op *win32op = base->evbase;
 	struct idx_info *idx = _idx;
 
-	event_debug(("%s: Removing event for "EV_SOCK_FMT,
-		__func__, EV_SOCK_ARG(fd)));
+	event_debug("%s: Removing event for "EV_SOCK_FMT,
+		__func__, EV_SOCK_ARG(fd));
 	if (events & EV_READ)
 		do_fd_clear(base, win32op, idx, 1);
 	if (events & EV_WRITE)
@@ -317,7 +317,7 @@ win32_dispatch(struct event_base *base, struct timeval *tv)
 
 	EVBASE_ACQUIRE_LOCK(base, th_base_lock);
 
-	event_debug(("%s: select returned %d", __func__, res));
+	event_debug("%s: select returned %d", __func__, res);
 
 	if (res <= 0) {
 		return res;

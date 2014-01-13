@@ -175,7 +175,7 @@ poll_dispatch(struct event_base *base, struct timeval *tv)
 		return (0);
 	}
 
-	event_debug(("%s: poll reports %d", __func__, res));
+	event_debug("%s: poll reports %d", __func__, res);
 
 	if (res == 0 || nfds == 0)
 		return (0);

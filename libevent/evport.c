@@ -323,7 +323,7 @@ evport_dispatch(struct event_base *base, struct timeval *tv)
 		}
 	}
 
-	event_debug(("%s: port_getn reports %d events", __func__, nevents));
+	event_debug("%s: port_getn reports %d events", __func__, nevents);
 
 	for (i = 0; i < nevents; ++i) {
 		struct fd_info *fdi;

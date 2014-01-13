@@ -432,7 +432,7 @@ default_evdns_log_fn(const char* file, int line,int warning, const char *buf)
 	else if (warning == EVDNS_LOG_MSG)
 		event_msgx("[evdns] %s", buf);
 	else
-		event_debug(("[evdns] %s", buf));
+		event_debug("[evdns] %s", buf);
 }
 
 static evdns_debug_log_fn_type evdns_log_fn = NULL;

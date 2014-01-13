@@ -194,7 +194,7 @@ devpoll_dispatch(struct event_base *base, struct timeval *tv)
 		return (0);
 	}
 
-	event_debug(("%s: devpoll_wait reports %d", __func__, res));
+	event_debug("%s: devpoll_wait reports %d", __func__, res);
 
 	for (i = 0; i < res; i++) {
 		int which = 0;

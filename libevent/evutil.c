@@ -599,7 +599,7 @@ evutil_check_interfaces(int force_recheck)
 			 * to sin. */
 			event_warnx("Got a strange local ipv4 address %s",buf);
 		} else {
-			event_debug(("Detected an IPv4 interface"));
+			event_debug("Detected an IPv4 interface");
 			had_ipv4_address = 1;
 		}
 	}
@@ -622,7 +622,7 @@ evutil_check_interfaces(int force_recheck)
 			    buf, sizeof(buf));
 			event_warnx("Got a strange local ipv6 address %s",buf);
 		} else {
-			event_debug(("Detected an IPv4 interface"));
+			event_debug("Detected an IPv4 interface");
 			had_ipv6_address = 1;
 		}
 	}
