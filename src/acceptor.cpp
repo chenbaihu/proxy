@@ -16,10 +16,12 @@ void Acceptor::on_new(struct evconnlistener *listener, evutil_socket_t sock,
                       struct sockaddr *addr, int addrlen) {
   char xhost[1024];
   char xport[64];
+#ifdef OS_LINUX
   if (getnameinfo(addr, addrlen, xhost, sizeof(xhost), xport, sizeof(xport),
                   NI_NUMERICSERV) == 0) {
     MYDEBUG("got a new connection from %s:%s", xhost, xport);
   } else
+#endif
     MYDEBUG("got a new connection");
   event_base *base = evconnlistener_get_base(listener);
   ConnectionIDType cid = getNewConnId();
