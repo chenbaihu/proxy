@@ -33,42 +33,38 @@ void closeLogFile() {
   if (logfile != NULL) fclose(logfile);
 }
 
-int my_snprintf(char *buf, size_t buflen, const char *format, ...) {
-  int r;
+#ifdef OS_WIN
+// These call the windows _vsnprintf, but always NUL-terminate.
+int safe_vsnprintf(char *str, size_t size, const char *format, va_list ap) {
+	if (size == 0)        // not even room for a \0?
+		return -1;          // not what C99 says to do, but what windows does
+	str[size - 1] = '\0';
+	return _vsnprintf(str, size - 1, format, ap);
+}
+#else
+#define safe_vsnprintf vsnprintf
+#endif
+
+/**
+ * Do not write more than size bytes (including '\0')
+ * if truncated, then return value >= buflen or the return value < 0 .
+ * if not truncated, return the number of characters printed (excluding '\0'), so
+ * it must less than buflen.
+ */
+int my_snprintf(char *buf, size_t buflen, const char *format, ...) {  
   va_list ap;
   va_start(ap, format);
-  r = my_vsnprintf(buf, buflen, format, ap);
+  const int r = safe_vsnprintf(buf, buflen, format, ap);
   va_end(ap);
   return r;
-}
-
-int my_vsnprintf(char *buf, size_t buflen, const char *format, va_list ap) {
-  int r;
-  if (!buflen) return 0;
-#ifdef _MSC_VER
-  r = _vsnprintf(buf, buflen, format, ap);
-  if (r < 0) r = _vscprintf(format, ap);
-#else
-  r = vsnprintf(buf, buflen, format, ap);
-#endif
-  buf[buflen - 1] = '\0';
-  return r;
-}
-
-static bool VADoRawLog(char **buf, int *size, const char *format, va_list ap) {
-  int n = vsnprintf(*buf, *size, format, ap);
-  if (n < 0 || n > *size) return false;
-  *size -= n;
-  *buf += n;
-  return true;
 }
 
 static bool DoRawLog(char **buf, int *size, const char *format, ...) {
   va_list ap;
   va_start(ap, format);
-  int n = my_vsnprintf(*buf, *size, format, ap);
+  int n = safe_vsnprintf(*buf, *size, format, ap);
   va_end(ap);
-  if (n < 0 || n > *size) return false;
+  if (n < 0 || n >= *size) return false;
   *size -= n;
   *buf += n;
   return true;
@@ -98,7 +94,6 @@ void mylog(const char *file, int line, int severity, const char *format, ...) {
 #endif
   static const int kLogBufSize = 4096;
   char buffer[kLogBufSize];
-  memset(buffer, 0, sizeof(buffer));
   int size = sizeof(buffer);
   char *buf = buffer;
 /*DoRawLog(&buf, &size, "%02d%02d %02d:%02d:%02d %5u %s:%d]  ",
@@ -108,7 +103,7 @@ void mylog(const char *file, int line, int severity, const char *format, ...) {
 #ifdef OS_WIN
   DoRawLog(&buf, &size, "%02d-%02d %02d:%02d:%02d %5u %s:%d ", 1 + t.tm_mon,
            t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec,
-           static_cast<unsigned int>(GetCurrentThreadId()), file, line);
+		   static_cast<unsigned int>(GetCurrentThreadId()), const_basename(file), line);
 #else
   DoRawLog(&buf, &size, "%02d-%02d %02d:%02d:%02d %s(%d): ", 1 + t.tm_mon,
            t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec, const_basename(file),
@@ -120,160 +115,15 @@ void mylog(const char *file, int line, int severity, const char *format, ...) {
 
   va_list ap;
   va_start(ap, format);
-  bool no_chop = VADoRawLog(&buf, &size, format, ap);
+  int n = safe_vsnprintf(buf, size, format, ap);
   va_end(ap);
-  if (no_chop) {
-    DoRawLog(&buf, &size, "\n");
-  } else {
-    DoRawLog(&buf, &size, "LOG ERROR: The Message was too long!\n");
+  if (n < 0 || n >= size) {
+	  DoRawLog(&buf, &size, "LOG ERROR: The Message was too long!\n");
+  } else {	  
+	  size -= n;
+	  buf += n;
+	  DoRawLog(&buf, &size, "\n");
   }
+  
   fputs(buffer, logfile);
-}
-
-static void _warn_helper(int severity, const char *errstr, const char *fmt,
-                         va_list ap);
-static void my_log(int severity, const char *msg);
-static void my_exit(int errcode) SLIB_NORETURN;
-
-typedef void (*my_fatal_cb)(int err);
-
-static my_fatal_cb fatal_fn = NULL;
-
-void my_set_fatal_callback(my_fatal_cb cb) { fatal_fn = cb; }
-
-#define _MY_ERR_ABORT ((int)0xdeaddead)
-
-static void my_exit(int errcode) {
-  if (fatal_fn) {
-    fatal_fn(errcode);
-    exit(errcode); /* should never be reached */
-  } else if (errcode == _MY_ERR_ABORT)
-    abort();
-  else
-    exit(errcode);
-}
-
-void my_err(int eval, const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  _warn_helper(MY_LOG_ERR, strerror(errno), fmt, ap);
-  va_end(ap);
-  my_exit(eval);
-}
-
-void my_warn(const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  _warn_helper(MY_LOG_WARN, strerror(errno), fmt, ap);
-  va_end(ap);
-}
-
-/*
-void
-my_sock_err(int eval, evutil_socket_t sock, const char *fmt, ...)
-{
-        va_list ap;
-        int err = evutil_socket_geterror(sock);
-
-        va_start(ap, fmt);
-        _warn_helper(MY_LOG_ERR, evutil_socket_error_to_string(err), fmt, ap);
-        va_end(ap);
-        my_exit(eval);
-}
-
-void
-my_sock_warn(evutil_socket_t sock, const char *fmt, ...)
-{
-        va_list ap;
-        int err = evutil_socket_geterror(sock);
-
-        va_start(ap, fmt);
-        _warn_helper(MY_LOG_WARN, evutil_socket_error_to_string(err), fmt, ap);
-        va_end(ap);
-        }*/
-
-void my_errx(int eval, const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  _warn_helper(MY_LOG_ERR, NULL, fmt, ap);
-  va_end(ap);
-  my_exit(eval);
-}
-
-void my_warnx(const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  _warn_helper(MY_LOG_WARN, NULL, fmt, ap);
-  va_end(ap);
-}
-
-void my_msgx(const char *fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  _warn_helper(MY_LOG_MSG, NULL, fmt, ap);
-  va_end(ap);
-}
-
-void my_debugx(const char *fmt, ...) {
-#ifdef NDEBUG
-  va_list ap;
-  va_start(ap, fmt);
-  _warn_helper(MY_LOG_DEBUG, NULL, fmt, ap);
-  va_end(ap);
-#endif
-}
-
-static void _warn_helper(int severity, const char *errstr, const char *fmt,
-                         va_list ap) {
-  char buf[1024];
-  size_t len;
-
-  if (fmt != NULL)
-    my_vsnprintf(buf, sizeof(buf), fmt, ap);
-  else
-    buf[0] = '\0';
-
-  if (errstr) {
-    len = strlen(buf);
-    if (len < sizeof(buf) - 3) {
-      my_snprintf(buf + len, sizeof(buf) - len, ": %s", errstr);
-    }
-  }
-
-  my_log(severity, buf);
-}
-
-static my_log_cb log_fn = NULL;
-
-void my_set_log_callback(my_log_cb cb) { log_fn = cb; }
-
-static void my_log(int severity, const char *msg) {
-  if (log_fn)
-    log_fn(severity, msg);
-  else {
-    const char *severity_str;
-    switch (severity) {
-      case MY_LOG_DEBUG:
-        severity_str = "debug";
-        break;
-      case MY_LOG_MSG:
-        severity_str = "msg";
-        break;
-      case MY_LOG_WARN:
-        severity_str = "warn";
-        break;
-      case MY_LOG_ERR:
-        severity_str = "err";
-        break;
-      default:
-        severity_str = "???";
-        break;
-    }
-    (void)fprintf(stderr, "[%s] %s\n", severity_str, msg);
-  }
 }

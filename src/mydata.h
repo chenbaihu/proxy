@@ -13,8 +13,6 @@ class MyData {
   size_t cap_;
 
  public:
-  MyData() : data_(nullptr), cap_(0) {};
-
   /**alloc a buffer of size cap */
   MyData(size_t cap = 0);
   MyData(const MyData& obj);

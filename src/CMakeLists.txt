@@ -13,7 +13,7 @@ SET(SOCKET_LIB Ws2_32)
 #add_definitions(-DHAVE_CONFIG_H)
 endif()
 
-ADD_LIBRARY(socks STATIC mylog.h mylog.cpp md5.cpp base64.cpp  acceptor.h acceptor.cpp ClientHandler.h ClientHandler.cpp mydata.h mydata.cpp Socks5Req.h Socks5Req.cpp getopt.cpp) #dns.h  dns.cpp
+ADD_LIBRARY(socks STATIC my_getopt.h my_getopt.cpp commontypes.h mylog.h mylog.cpp md5.cpp base64.cpp  acceptor.h acceptor.cpp ClientHandler.h ClientHandler.cpp mydata.h mydata.cpp Socks5Req.h Socks5Req.cpp) #dns.h  dns.cpp
 
 add_executable(socksd socksd.cpp)
 target_link_libraries(socksd socks event ${CMAKE_THREAD_LIBS_INIT} ${SOCKET_LIB})
