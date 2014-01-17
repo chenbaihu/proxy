@@ -16,12 +16,15 @@
 *.vcxproj
 *.vcxproj.filters
 *.sln
+/*.opensdf
 
 /CMakeCache.txt
 CMakeFiles/
 Makefile
 config.h
 src/Testing
+Debug/
 
 cmake_install.cmake
+CTestTestfile.cmake
 install_manifest.txt
