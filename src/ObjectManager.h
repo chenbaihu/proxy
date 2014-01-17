@@ -5,15 +5,13 @@ namespace slib{
   class ObjectManager
   {
   private:
-    static ObjectManager* instance_;
+    static ObjectManager instance_;
   public:  
     ~ObjectManager();
 
 
     static ObjectManager* instance() {
-      if (instance_) return instance_;
-      instance_ = new ObjectManager();
-      return instance_;
+      return &instance_;
     }
     /**
     * Register an ACE_Cleanup object for cleanup at process

@@ -65,7 +65,6 @@ namespace slib {
     int open(evutil_socket_t fd,  int backlog) ;
     int open(const struct sockaddr *sa, int socklen, int backlog=128);
    
-    Listener();
     virtual ~Listener() throw();
 
     /**

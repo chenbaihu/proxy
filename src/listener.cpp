@@ -5,7 +5,7 @@
 #include "logger.h"
 
 namespace slib{
-  Listener::Listener(std::shared_ptr<event_base> base, unsigned flags, bool enableLocking) :listener(nullptr), ebase(base), refcnt(1){
+  Listener::Listener(std::shared_ptr<event_base> base, unsigned f, bool enableLocking) :listener(nullptr), ebase(base), flags(f),refcnt(1){
     if (enableLocking){
       //TODO:create lock
       //EVTHREAD_ALLOC_LOCK(lev->base.lock, EVTHREAD_LOCKTYPE_RECURSIVE);
@@ -31,9 +31,7 @@ namespace slib{
 	};	
 
   
-  Listener::Listener():lock(NULL),flags(0),refcnt(0),enabled(false){
-     
-  }
+
 
   Listener::~Listener() throw() {
 
@@ -120,6 +118,7 @@ inline bool isSocketValid(evutil_socket_t fd){
 }
 
 void Listener::on_delete(){
+  MYDEBUG("delete listener");
   event_del(listener);
   if (this->flags & LEV_OPT_CLOSE_ON_FREE)
     evutil_closesocket(event_get_fd(this->listener));

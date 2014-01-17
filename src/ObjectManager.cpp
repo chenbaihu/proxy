@@ -1,9 +1,11 @@
-#include "ObjectManager.h"
-#include "cleanup.h"
 #include <cerrno>
 
+#include "ObjectManager.h"
+#include "cleanup.h"
+
 namespace slib {
-  ObjectManager* ObjectManager::instance_;
+ObjectManager ObjectManager::instance_;
+
 ObjectManager::ObjectManager()
 {
 }

@@ -100,8 +100,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
   _In_ int       nCmdShow)
 {
   UNREFERENCED_PARAMETER(hPrevInstance);
-
-  std::auto_ptr<slib::ObjectManager> om(slib::ObjectManager::instance());
   int argc;
   LPWSTR* wargv = CommandLineToArgvW(lpCmdLine, &argc);
   char** my_argv = new char*[argc + 2];

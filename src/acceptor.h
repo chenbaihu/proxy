@@ -17,8 +17,8 @@ class Acceptor :public slib::Listener{
   typedef slib::Listener super;
   typedef std::unordered_map<ConnectionIDType, ClientHandler*> HandlerMap;
   HandlerMap handlers;
-  Acceptor(const Acceptor&) {};
-  Acceptor& operator=(const Acceptor&) { return *this; }
+  Acceptor(const Acceptor&) ;
+  Acceptor& operator=(const Acceptor&) ;
 
  public:
   std::shared_ptr<evdns_base> dns_;

@@ -16,6 +16,11 @@ void Logger::log(const char *file, int line, int severity, const char *format, .
 }
 
 Logger::~Logger() throw(){
-
+  for (AppenderItem* h = appenders; h != NULL;){
+    AppenderItem* n=h->next;
+    delete h->appender;
+    delete h;
+    h=n;
+  }
 }
 }
