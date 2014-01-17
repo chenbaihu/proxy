@@ -13,18 +13,29 @@ SET(SOCKET_LIB Ws2_32)
 #add_definitions(-DHAVE_CONFIG_H)
 endif()
 
-ADD_LIBRARY(socks STATIC my_getopt.h my_getopt.cpp commontypes.h mylog.h mylog.cpp md5.cpp base64.cpp  acceptor.h acceptor.cpp ClientHandler.h ClientHandler.cpp mydata.h mydata.cpp Socks5Req.h Socks5Req.cpp) #dns.h  dns.cpp
 
+SET(SOCKS_SRC ClientHandler.cpp ClientHandler.h Config.cpp Config.h FileBasedLogAppender.cpp FileBasedLogAppender.h LibEventInit.cpp LibEventInit.h LogAppender.cpp LogAppender.h Logger.cpp Logger.h OS_Exit_Info.cpp OS_Exit_Info.h ObjectManager.cpp ObjectManager.h Socks5Req.cpp Socks5Req.h  acceptor.cpp acceptor.h base64.cpp base64.h cleanup.cpp cleanup.h common.cpp commontypes.h evbuffer_unitest.cpp googleinit.h listener.cpp listener.h md5.cpp md5.h my_getopt.cpp my_getopt.h mydata.cpp mydata.h port.h resource.h singleton.h socksd.cpp MyThread.h MyThread.cpp)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+SET(SOCKS_SRC ${SOCKS_SRC} WsaModule.cpp WsaModule.h port_win32.cpp port_win32.h Win32Thread.cpp Win32Thread.h)
+else()
+SET(SOCKS_SRC ${SOCKS_SRC} PosixThread.cpp PosixThread.h)
+endif()
+
+ADD_LIBRARY(socks STATIC ${SOCKS_SRC}) #dns.h  dns.cpp
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+add_executable(socksd WIN32 winmain.cpp socksd.rc)
+else()
 add_executable(socksd socksd.cpp)
+endif()
 target_link_libraries(socksd socks event ${CMAKE_THREAD_LIBS_INIT} ${SOCKET_LIB})
-
 #add_executable(curl_unitest curl_unitest.cpp)
 #target_link_libraries(curl_unitest socks event gtest curl ${CMAKE_THREAD_LIBS_INIT})
 #ADD_TEST(curl_unitest ${CMAKE_CURRENT_BINARY_DIR}/curl_unitest)
 
-add_executable(evbuffer_unitest evbuffer_unitest.cpp)
-target_link_libraries(evbuffer_unitest event gtest  ${CMAKE_THREAD_LIBS_INIT} ${SOCKET_LIB})
-ADD_TEST(evbuffer_unitest ${CMAKE_CURRENT_BINARY_DIR}/evbuffer_unitest)
+add_executable(Thread_unitest Thread_unitest.cpp)
+target_link_libraries(Thread_unitest socks gtest  ${CMAKE_THREAD_LIBS_INIT})
+ADD_TEST(Thread_unitest ${CMAKE_CURRENT_BINARY_DIR}/Thread_unitest)
 
 
 #add_executable(evdns_unitest evdns_unitest.cpp)

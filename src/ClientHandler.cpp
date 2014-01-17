@@ -3,7 +3,7 @@
 #include "ClientHandler.h"
 #include "acceptor.h"
 #include "Socks5Req.h"
-#include "mylog.h"
+#include "logger.h"
 
 void ClientHandler::close() { lis_->remove(id_); }
 void ClientHandler::on_remote_read(bufferevent *bev) {
@@ -27,7 +27,7 @@ void ClientHandler::on_remote_servername_resolved(
     return;
   } else
     MYDEBUG("resolve done");
-  event_base *base = this->lis_->get_event_base();
+  event_base *base = this->lis_->get_base();
   for (auto ai = addr; ai; ai = ai->ai_next) {
     remote_bev_ = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
     bufferevent_setcb(remote_bev_, remote_readcb, NULL, remote_eventcb, this);

@@ -5,19 +5,15 @@
 
 #include "acceptor.h"
 #include "ClientHandler.h"
-#include "mylog.h"
+#include "logger.h"
 
 static ConnectionIDType getNewConnId() {
   static ConnectionIDType id(0);
   return ++id;
 }
 
-event_base *Acceptor::get_event_base() {
-  event_base *base = evconnlistener_get_base(evlistener.get());
-  return base;
-}
-void Acceptor::on_new(struct evconnlistener *listener, evutil_socket_t sock,
-                      struct sockaddr *addr, int addrlen) {
+
+void Acceptor::on_new(evutil_socket_t sock, struct sockaddr *addr, int addrlen) {
 
 
   char xhost[1024];
@@ -27,7 +23,7 @@ void Acceptor::on_new(struct evconnlistener *listener, evutil_socket_t sock,
     MYDEBUG("got a new connection from %s:%s", xhost, xport);
   } else
     MYDEBUG("got a new connection");
-  event_base *base = evconnlistener_get_base(listener);
+  event_base *base = this->get_base();
   ConnectionIDType cid = getNewConnId();
   // TODO:add BEV_OPT_THREADSAFE??
   bufferevent *bev = bufferevent_socket_new(base, sock, BEV_OPT_CLOSE_ON_FREE);
@@ -46,8 +42,10 @@ void Acceptor::remove(ConnectionIDType id) {
   }
 }
 
-Acceptor::~Acceptor() throw() {
+void Acceptor::on_delete(){
   for (std::pair<ConnectionIDType, ClientHandler *> h : handlers) {
     delete h.second;
   }
+  super::on_delete();
 }
+
