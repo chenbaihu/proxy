@@ -12,3 +12,7 @@ static void
 _evdns_log(const char* file, int line,int warn, const char *fmt, ...)
 
 #define log(se,...) _evdns_log(__FILE__,__LINE__,se,__VA_ARGS__)
+
+evdns.c:
+
+global_randomize_case = 0
