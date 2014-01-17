@@ -16,7 +16,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 include_directories(${PROJECT_SOURCE_DIR}/zlib)
 include_directories(${OPENSSL_INCLUDE_DIR})
 
-SET(REGRESS_SRCS regress.c regress_buffer.c regress_http.c regress_testutils.c regress_rpc.c ${CMAKE_CURRENT_SOURCE_DIR}/regress.gen.c regress_et.c regress_bufferevent.c regress_listener.c regress_util.c tinytest.c regress_main.c regress_minheap.c regress_zlib.c regress_thread.c regress_ssl.c) #regress_dns.c
+SET(REGRESS_SRCS regress.c regress_buffer.c regress_http.c regress_testutils.c regress_rpc.c ${CMAKE_CURRENT_SOURCE_DIR}/regress.gen.c regress_et.c regress_bufferevent.c regress_listener.c regress_util.c tinytest.c regress_main.c regress_minheap.c regress_zlib.c regress_thread.c regress_ssl.c regress_dns.c)
 
 if(WIN32)
 SET(REGRESS_SRCS ${REGRESS_SRCS} regress_iocp.c)
