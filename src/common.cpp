@@ -6,6 +6,10 @@
 #include <windows.h>
 #include <tchar.h>
 #include <Strsafe.h>
+#else
+#include <sys/types.h>
+#include <sys/stat.h> //fstat
+#include <unistd.h> //fstat
 #endif
 namespace slib{
 
@@ -45,7 +49,7 @@ namespace slib{
 #elif defined(OS_LINUX)
   int64_t getFilesize(FileHandle h){
     struct stat st;
-    memset(&st, 0, sizeof(stat));
+    memset(&st, 0, sizeof(st));
     if (fstat(h, &st)) return -1;
     return st.st_size;
   }
@@ -118,9 +122,11 @@ namespace slib{
       return "";
     }    
   }
-}
-#elif defined(OS_LINUX)
-  std::string readFileAsString(FileHandle h){
+#else
+std::string readFileAsString(const std::string& filename ){
     throw "not impl";
   }
 #endif
+
+}
+

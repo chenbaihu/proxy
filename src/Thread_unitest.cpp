@@ -1,7 +1,8 @@
 
 #include <gtest/gtest.h>
 #include <memory>
-#include "Win32Thread.h"
+#include "MyThread.h"
+#include "IRunnable.h"
 
 class Win32ThreadTest : public ::testing::Test {
   virtual void SetUp() {}
@@ -19,7 +20,7 @@ public:
 };
 
 #define TEST_RETVALUE(i) { \
-std::auto_ptr<MyThread> thr(MyThread::create(new R(i))); \
+std::shared_ptr<MyThread> thr(MyThread::create(new R(i))); \
 thr->run(); \
 auto ret = thr->wait(); \
 ASSERT_EQ(i, ret); }

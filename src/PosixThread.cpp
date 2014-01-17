@@ -1,11 +1,14 @@
+#include <stdlib.h>
+#include <stdexcept>
+#include "logger.h"
 #include "PosixThread.h"
-
+#include "IRunnable.h"
 
 static void* my_thread_entry(void * param){
-  if (param == NULL) return 1;
-  IRunnable* r = (IRunnable*)param; IRunnable* r = (IRunnable*)param;
   unsigned* ret = (unsigned*)malloc(sizeof(unsigned));
   *ret = 1;
+  if (param == NULL) return ret;
+  IRunnable* r = (IRunnable*)param; 
   try{
     *ret = (unsigned)r->svc();
   } catch (std::exception& ex){
@@ -18,8 +21,7 @@ static void* my_thread_entry(void * param){
   return ret;
 }
 
-PosixThread::PosixThread()
-{
+PosixThread::PosixThread(IRunnable* r):runnable_(r),state(INIT){
 }
 
 
@@ -28,17 +30,23 @@ PosixThread::~PosixThread()
 }
 
 void PosixThread::run(){
+  if(state!=INIT) return;
   pthread_attr_t attr;
   pthread_attr_init(&attr);
-  this->threadID = pthread_create(&threadID, &attr, my_thread_entry, runnable);
+  int err=pthread_create(&threadID, &attr, my_thread_entry, runnable_);
+  if(err)
+    return;
+  state=RUNNING;
 }
 
 unsigned PosixThread::wait(){
+  if(state!=RUNNING) return 1;
   void *res;
-  int ret = pthread_join(threadID, &res);
-  if (ret)
+  int joinret = pthread_join(threadID, &res);
+  if (joinret)
     throw std::runtime_error("pthread_join error");
-  unsigned int ret = *res;
+  unsigned int ret = *(unsigned*)res;
   free(res);
+  state=DEAD;
   return ret;
 }
