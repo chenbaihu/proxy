@@ -21,9 +21,9 @@ static void* my_thread_entry(void * param){
   return ret;
 }
 
-PosixThread::PosixThread(IRunnable* r):runnable_(r),state(INIT){
+PosixThread::PosixThread(std::shared_ptr<IRunnable> r):runnable_(r),state(INIT){
+  pthread_attr_init(&attr);
 }
-
 
 PosixThread::~PosixThread()
 {
@@ -31,9 +31,9 @@ PosixThread::~PosixThread()
 
 void PosixThread::run(){
   if(state!=INIT) return;
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-  int err=pthread_create(&threadID, &attr, my_thread_entry, runnable_);
+
+
+  int err=pthread_create(&threadID, &attr, my_thread_entry, runnable_.get());
   if(err)
     return;
   state=RUNNING;

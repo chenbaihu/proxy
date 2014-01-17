@@ -4,7 +4,7 @@
 #include "MyThread.h"
 #include "IRunnable.h"
 
-class Win32ThreadTest : public ::testing::Test {
+class ThreadTest : public ::testing::Test {
   virtual void SetUp() {}
   virtual void TearDown() {}
 };
@@ -20,16 +20,29 @@ public:
 };
 
 #define TEST_RETVALUE(i) { \
-std::shared_ptr<MyThread> thr(MyThread::create(new R(i))); \
-thr->run(); \
-auto ret = thr->wait(); \
+std::shared_ptr<IRunnable> r=std::make_shared<R>(i);\
+MyThread thr(r); \
+thr.run(); \
+auto ret = thr.wait(); \
 ASSERT_EQ(i, ret); }
 
-TEST_F(Win32ThreadTest, test1) {
+TEST_F(ThreadTest, test1) {
   TEST_RETVALUE(0);
   TEST_RETVALUE(1);
   TEST_RETVALUE(2);
   TEST_RETVALUE(-1);
+}
+
+class R2:public IRunnable{
+  virtual unsigned svc(void) {
+    throw std::runtime_error("test exception");
+  }
+};
+TEST_F(ThreadTest, test2) {
+  std::shared_ptr<IRunnable> r=std::make_shared<R2>();	
+  MyThread thr(r);					
+  thr.run();						
+  thr.wait(); 
 }
 
 int main(int argc, char *argv[]) {

@@ -1,20 +1,20 @@
 #pragma once
-#include "MyThread.h"
 #include <pthread.h>
-
-class PosixThread :
-  public MyThread
+#include <memory>
+class IRunnable;
+class PosixThread
 {
 private:
   pthread_t threadID;
-  IRunnable* runnable_;
+  pthread_attr_t attr;
+  std::shared_ptr<IRunnable>  runnable_;
   enum {
     INIT,
     RUNNING,
     DEAD
   } state;
 public:
-  PosixThread(IRunnable* r);
+  PosixThread(std::shared_ptr<IRunnable> r);
   ~PosixThread();
   virtual void run();
   virtual unsigned wait();

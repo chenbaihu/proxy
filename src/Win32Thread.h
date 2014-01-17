@@ -1,9 +1,9 @@
 #pragma once
-#include "MyThread.h"
 #include "IRunnable.h"
 #include <Windows.h>
+#include <memory>
 
-class Win32Thread :public MyThread{
+class Win32Thread{
 private:
   IRunnable* runnable_;
   HANDLE hThread;
