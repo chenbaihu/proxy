@@ -21,7 +21,7 @@
 /CMakeCache.txt
 CMakeFiles/
 Makefile
-config.h
+/config.h
 src/Testing
 Debug/
 
