@@ -14,11 +14,11 @@ SET(SOCKET_LIB Ws2_32)
 endif()
 
 
-SET(SOCKS_SRC ClientHandler.cpp ClientHandler.h Config.cpp Config.h FileBasedLogAppender.cpp FileBasedLogAppender.h LibEventInit.cpp LibEventInit.h LogAppender.cpp LogAppender.h Logger.cpp Logger.h OS_Exit_Info.cpp OS_Exit_Info.h ObjectManager.cpp ObjectManager.h Socks5Req.cpp Socks5Req.h  acceptor.cpp acceptor.h base64.cpp base64.h cleanup.cpp cleanup.h common.cpp commontypes.h evbuffer_unitest.cpp googleinit.h listener.cpp listener.h md5.cpp md5.h my_getopt.cpp my_getopt.h mydata.cpp mydata.h port.h resource.h singleton.h socksd.cpp MyThread.h MyThread.cpp)
+SET(SOCKS_SRC ClientHandler.cpp ClientHandler.h Config.cpp Config.h FileBasedLogAppender.cpp FileBasedLogAppender.h LibEventInit.cpp LibEventInit.h LogAppender.cpp LogAppender.h logger.cpp logger.h OS_Exit_Info.cpp OS_Exit_Info.h ObjectManager.cpp ObjectManager.h Socks5Req.cpp Socks5Req.h  acceptor.cpp acceptor.h base64.cpp base64.h cleanup.cpp cleanup.h common.cpp commontypes.h evbuffer_unitest.cpp googleinit.h listener.cpp listener.h md5.cpp md5.h my_getopt.cpp my_getopt.h mydata.cpp mydata.h port.h resource.h singleton.h socksd.cpp MyThread.h MyThread.cpp)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 SET(SOCKS_SRC ${SOCKS_SRC} WsaModule.cpp WsaModule.h port_win32.cpp port_win32.h Win32Thread.cpp Win32Thread.h)
 else()
-SET(SOCKS_SRC ${SOCKS_SRC} PosixThread.cpp PosixThread.h)
+SET(SOCKS_SRC ${SOCKS_SRC} PosixThread.cpp PosixThread.h port_posix.h port_posix.cpp)
 endif()
 
 ADD_LIBRARY(socks STATIC ${SOCKS_SRC}) #dns.h  dns.cpp

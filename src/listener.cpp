@@ -62,7 +62,6 @@ namespace slib{
       }
     }
 
-    int on = 1;
     if (setKeepAlive(fd)) {
       evutil_closesocket(fd);
       return -1;

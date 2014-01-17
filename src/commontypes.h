@@ -6,6 +6,7 @@
 #ifdef OS_WIN
 #include <windows.h>
 #endif
+#include <string.h> //strrchr
 
 typedef int64_t ConnectionIDType;
 
@@ -16,7 +17,7 @@ typedef int64_t ConnectionIDType;
 	assert(X); \
 	__analysis_assume(X);}
 #else
-#define MYASSERT(X) {std::assert(x);}
+#define MYASSERT(X) {assert(X);}
 #endif
 
 

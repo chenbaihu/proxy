@@ -92,8 +92,6 @@ int my_main(int argc, char *argv[]) {
     return -1;
   }
 
-  slib::Listener *listener(NULL);
-
   Acceptor lis(ebase, LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE, false, dns_base);
   for (evutil_addrinfo *ai = res; ai != NULL; ai = ai->ai_next) {
     char xhost[1024];
