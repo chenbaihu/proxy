@@ -19,7 +19,7 @@ static unsigned APIENTRY my_thread_entry(void* param){
   return ret;
 }
 
-Win32Thread::Win32Thread(IRunnable* runnable) :runnable_(runnable), hThread(INVALID_HANDLE_VALUE){}
+Win32Thread::Win32Thread(std::shared_ptr<IRunnable> runnable) :runnable_(runnable), hThread(INVALID_HANDLE_VALUE){}
 
 
 unsigned Win32Thread::wait(){
@@ -37,7 +37,7 @@ Win32Thread::~Win32Thread() throw ()
 
 void Win32Thread::run(){
   unsigned threadID;
-  this->hThread = (HANDLE)_beginthreadex(NULL, 0, my_thread_entry, runnable_, 0, &threadID);
+  this->hThread = (HANDLE)_beginthreadex(NULL, 0, my_thread_entry, runnable_.get(), 0, &threadID);
   if (this->hThread == 0){ //_beginthreadex returns 0 on failure, rather than -1L.
     this->hThread = INVALID_HANDLE_VALUE;
     return;

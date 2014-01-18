@@ -5,10 +5,10 @@
 
 class Win32Thread{
 private:
-  IRunnable* runnable_;
+  std::shared_ptr<IRunnable> runnable_;
   HANDLE hThread;
 public:
-  Win32Thread(IRunnable* runnable);
+  Win32Thread(std::shared_ptr<IRunnable> runnable);
   virtual ~Win32Thread() throw ();
   virtual void run() ;
   virtual unsigned wait() ;
