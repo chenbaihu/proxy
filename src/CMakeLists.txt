@@ -39,7 +39,7 @@ ADD_TEST(Thread_unitest ${CMAKE_CURRENT_BINARY_DIR}/Thread_unitest)
 
 
 add_executable(curl_unitest curl_unitest.cpp)
-target_link_libraries(curl_unitest socks gtest event curl ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(curl_unitest socks gtest event libcurl ${CMAKE_THREAD_LIBS_INIT})
 ADD_TEST(curl_unitest ${CMAKE_CURRENT_BINARY_DIR}/curl_unitest)
 
 #add_executable(evdns_unitest evdns_unitest.cpp)
