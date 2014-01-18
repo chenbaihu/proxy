@@ -11,25 +11,22 @@
 #include <sys/stat.h> //fstat
 #include <unistd.h> //fstat
 #endif
+
+/**
+* Do not write more than size bytes (including '\0')
+* if truncated, then return value >= buflen or the return value < 0 .
+* if not truncated, return the number of characters printed (excluding '\0'), so
+* it must less than buflen.
+*/
+int my_snprintf(char *buf, size_t buflen, const char *format, ...) {
+  va_list ap;
+  va_start(ap, format);
+  const int r = safe_vsnprintf(buf, buflen, format, ap);
+  va_end(ap);
+  return r;
+}
+
 namespace slib{
-
-  /**
-  * Do not write more than size bytes (including '\0')
-  * if truncated, then return value >= buflen or the return value < 0 .
-  * if not truncated, return the number of characters printed (excluding '\0'), so
-  * it must less than buflen.
-  */
-  int my_snprintf(char *buf, size_t buflen, const char *format, ...) {  
-    va_list ap;
-    va_start(ap, format);
-    const int r = safe_vsnprintf(buf, buflen, format, ap);
-    va_end(ap);
-    return r;
-  }
-
-
-
-
 
 #if defined(OS_WIN)
   int64_t getFilesize(FileHandle h){

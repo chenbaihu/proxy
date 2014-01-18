@@ -36,18 +36,14 @@ unsigned LibeventThread::svc(void){
 #endif
   LIBEVENTINIT::instance();
 
-    std::shared_ptr<event_base> ebase(event_base_new(), my_free_event_base);
+   ebase.reset(event_base_new(), my_free_event_base);
+    
   if (!ebase) {
     MYDEBUG("create event base fail");
     return -1;
   }
-
-  std::shared_ptr<evdns_base> dns_base(evdns_base_new(ebase.get(), 1),
-    my_free_event_dns_base_imm);
-  if (!dns_base) {
-    MYDEBUG("create event dns base fail");
-    return -1;
-  }
+  dns.init(ebase.get());
+  
   const char *port = "1080";
   evutil_addrinfo hints;
   memset(&hints, 0, sizeof(hints));
@@ -62,7 +58,7 @@ unsigned LibeventThread::svc(void){
     return -1;
   }
   std::shared_ptr<addrinfo> tmp_(res,evutil_freeaddrinfo);
-  Acceptor* lis=new Acceptor(ebase, LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE, false, dns_base);
+  Acceptor* lis=new Acceptor(ebase, LEV_OPT_CLOSE_ON_FREE | LEV_OPT_REUSEABLE, false, &dns);
   for (evutil_addrinfo *ai = res; ai != NULL; ai = ai->ai_next) {
     char xhost[1024];
     char xport[64];

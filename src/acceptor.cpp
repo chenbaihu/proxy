@@ -13,9 +13,7 @@ static ConnectionIDType getNewConnId() {
 }
 
 
-void Acceptor::on_new(evutil_socket_t sock, struct sockaddr *addr, int addrlen) {
-
-
+void Acceptor::on_new_conn_accepted(evutil_socket_t sock, struct sockaddr *addr, int addrlen) {
   char xhost[1024];
   char xport[64];
   if (getnameinfo(addr, addrlen, xhost, sizeof(xhost), xport, sizeof(xport),

@@ -1,6 +1,7 @@
 #pragma once
 
 namespace slib {
+#ifndef OS_WIN
 template <class T>
 inline T increment(T& t) throw() {
   return __sync_add_and_fetch(&t, 1);
@@ -10,6 +11,7 @@ template <class T>
 inline T decrement(T& t) throw() {
   return __sync_add_and_fetch(&t, -1);
 }
+#endif
 
 class shared_count {
   shared_count(const shared_count&);

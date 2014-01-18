@@ -23,6 +23,13 @@ static size_t curl_write_data(void *buffer, size_t size, size_t nmemb, void *use
   return size*nmemb;
 }
 
+#ifdef OS_WIN
+int strncasecmp(const char *s1, const char *s2, size_t n){
+  return _strnicmp(s1, s2, n);
+}
+#endif
+
+
 static size_t extract_md5_from_header( void *ptr, size_t size, size_t nmemb, void *userdata){
   std::string* md5=(std::string*)userdata;
   size_t line_length=size*nmemb;
@@ -96,7 +103,7 @@ TEST_F(CurlTest, test1) {
   fetchUrl(curl,"http://jigsaw.w3.org/HTTP/h-content-md5.html","");
   //  fetchUrl(curl,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks4://127.0.0.1:1080");
   //fetchUrl(curl,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks4a://127.0.0.1:1080");
-  //fetchUrl(curl,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks5://127.0.0.1:1080");
+  fetchUrl(curl,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks5://127.0.0.1:1080");
   fetchUrl(curl,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks5h://127.0.0.1:1080");
   curl_easy_cleanup(curl);
 
@@ -104,7 +111,7 @@ TEST_F(CurlTest, test1) {
   fetchUrl(NULL,"http://jigsaw.w3.org/HTTP/h-content-md5.html","");
   //fetchUrl(NULL,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks4://127.0.0.1:1080");
   //fetchUrl(NULL,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks4a://127.0.0.1:1080");
-  //fetchUrl(NULL,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks5://127.0.0.1:1080");
+  fetchUrl(NULL,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks5://127.0.0.1:1080");
   fetchUrl(NULL,"http://jigsaw.w3.org/HTTP/h-content-md5.html","socks5h://127.0.0.1:1080");
  }
 

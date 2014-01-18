@@ -3,7 +3,10 @@
 #include <event2/dns.h>
 #include <event2/bufferevent.h>
 #include <event2/buffer.h>
+#include <vector>
+
 #include "commontypes.h"
+#include "EvdnsWrapper.h"
 
 class Acceptor;
 
@@ -52,7 +55,7 @@ class ClientHandler {
   void on_write(bufferevent *bev);
   void on_event(bufferevent *bev, short events);
   void on_remote_event(bufferevent *bev, short events);
-  void on_remote_servername_resolved(int result, struct evutil_addrinfo *res);
+  void on_remote_servername_resolved(int result, const std::vector<MyAddrInfo>& res);
   ClientHandler(Acceptor *lis, ConnectionIDType id, bufferevent *bev)
       : lis_(lis),
         id_(id),

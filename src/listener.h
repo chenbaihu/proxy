@@ -99,7 +99,7 @@ namespace slib {
     virtual void shutdown_impl() {/*do nothing */
     }
 
-    void on_new_conn_accepted(evutil_socket_t, struct sockaddr *, int socklen);
+    virtual void on_new_conn_accepted(evutil_socket_t, struct sockaddr *, int socklen);
     void on_fatal_error();
     bool decref_and_unlock();
     void read_cb(evutil_socket_t fd, short what);
